@@ -1,0 +1,60 @@
+baseURL = "https://beryju.org/"
+languageCode = "en-us"
+title = "BeryJu.org"
+theme = "hello-friend"
+disqusShortname = "beryju"
+googleAnalytics = "UA-39172069-5"
+paginate = 5
+# enableGitInfo = true
+
+[params]
+  contentTypeName = "blog"
+  defaultTheme = "dark"
+  showMenuItems = 2
+  showReadingTime = true
+  # toc = true
+[languages]
+  [languages.en]
+    title = "BeryJu.org"
+    subtitle = ""
+    keywords = ""
+    copyright = ""
+    menuMore = "Show more"
+    writtenBy = "Written by"
+    readMore = "Read more"
+    readOtherPosts = "Read other posts"
+    newerPosts = "Newer posts"
+    olderPosts = "Older posts"
+    minuteReadingTime = "min read"
+    dateFormatSingle = "2006-01-02"
+    dateFormatList = "2006-01-02"
+    # leave empty to disable, enter display text to enable
+    # lastModDisplay = ""
+
+    [languages.en.params.logo]
+      logoText = "BeryJu.org"
+      logoHomeLink = "/"
+    # or
+    #
+    # path = "/img/your-example-logo.svg"
+    # alt = "Your example logo alt text"
+
+    [languages.en.menu]
+      [[languages.en.menu.main]]
+        identifier = "about"
+        name = "About"
+        url = "/about"
+      [[languages.en.menu.main]]
+        identifier = "github"
+        name = "Github"
+        url = "https://github.com/BeryJu"
+
+# [params]
+# author = "Jens Langhammer"
+# footer = "&copy; Jens Langhammer 2021"
+
+# [menu]
+#   [[menu.main]]
+#     name = "GitHub"
+#     url = ""
+#     weight = 1
