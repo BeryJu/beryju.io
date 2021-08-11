@@ -11,8 +11,6 @@ taxonomy:
         - domain
         - 'active directory'
         - N3Sso5Fault13InternalFault9ExceptionE
-jscomments:
-    provider: disqus
 header_image: '0'
 summary:
     enabled: '1'

@@ -9,8 +9,6 @@ taxonomy:
         - setup
         - battlestation
         - homelab
-jscomments:
-    provider: disqus
 header_image: '1'
 header_image_file: header.png
 summary:

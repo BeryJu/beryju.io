@@ -21,8 +21,6 @@ taxonomy:
         - getting-started-with-foreman
     author:
         - jens
-jscomments:
-    provider: disqus
 header_image: '0'
 summary:
     enabled: '1'
