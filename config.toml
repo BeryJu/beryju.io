@@ -1,4 +1,4 @@
-baseURL = "https://beryjuorg.netlify.app"
+baseURL = "https://beryju.org"
 languageCode = "en-us"
 title = "BeryJu.org"
 theme = "hello-friend"
