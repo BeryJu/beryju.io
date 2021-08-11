@@ -1,18 +1,21 @@
-# baseURL = "https://beryju.org/"
+baseURL = "https://beryjuorg.netlify.app"
 languageCode = "en-us"
 title = "BeryJu.org"
 theme = "hello-friend"
 disqusShortname = "beryju"
 googleAnalytics = "UA-39172069-5"
 paginate = 5
-# enableGitInfo = true
+enableGitInfo = true
+
+[author]
+name = "Jens Langhammer"
+email = "jens@beryju.org"
 
 [params]
   contentTypeName = "blog"
   defaultTheme = "dark"
   showMenuItems = 2
   showReadingTime = true
-  # toc = true
 [languages]
   [languages.en]
     title = "BeryJu.org"
@@ -28,16 +31,10 @@ paginate = 5
     minuteReadingTime = "min read"
     dateFormatSingle = "2006-01-02"
     dateFormatList = "2006-01-02"
-    # leave empty to disable, enter display text to enable
-    # lastModDisplay = ""
 
     [languages.en.params.logo]
       logoText = "BeryJu.org"
       logoHomeLink = "/"
-    # or
-    #
-    # path = "/img/your-example-logo.svg"
-    # alt = "Your example logo alt text"
 
     [languages.en.menu]
       [[languages.en.menu.main]]
@@ -48,13 +45,3 @@ paginate = 5
         identifier = "github"
         name = "Github"
         url = "https://github.com/BeryJu"
-
-# [params]
-# author = "Jens Langhammer"
-# footer = "&copy; Jens Langhammer 2021"
-
-# [menu]
-#   [[menu.main]]
-#     name = "GitHub"
-#     url = ""
-#     weight = 1
