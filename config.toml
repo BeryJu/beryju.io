@@ -40,7 +40,7 @@ email = "jens@beryju.org"
       [[languages.en.menu.main]]
         identifier = "about"
         name = "About"
-        url = "/about"
+        url = "https://jela.io"
       [[languages.en.menu.main]]
         identifier = "github"
         name = "Github"
