@@ -1,6 +1,6 @@
 ---
 title: 'Automating Ubuntu Server 20.04 with Packer'
-date: '18:04 27-04-2020'
+date: '2020-04-27T18:04:00+02:00'
 taxonomy:
     category:
         - blog
