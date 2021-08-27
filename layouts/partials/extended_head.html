@@ -1,2 +1,6 @@
 <link rel="stylesheet" href="{{.Site.BaseURL}}/css/override.css">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6985699970333869" crossorigin="anonymous"></script>
+{{ range .AlternativeOutputFormats -}}
+{{ printf `
+<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+{{ end -}}
