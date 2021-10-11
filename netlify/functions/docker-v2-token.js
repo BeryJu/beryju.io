@@ -1,15 +1,12 @@
-const fetch = require('node-fetch');
-
 exports.handler = async function (event, context) {
-    const scope = `scope="repository:user/image:pull"`;
-    const tokenRes = await fetch(
-        {
-            url: `https://ghcr.io/token?service=ghcr.io&scope=${scope}`,
-            method: "GET",
-        }
-    ).json()
+    const fetch = await import('node-fetch');
+    console.log(event);
+    console.log(context);
+    const scope = `repository:user/image:pull`;
+    const tokenRes = await fetch.default(`https://ghcr.io/token?service=ghcr.io&scope=${scope}`);
+    console.log(tokenRes)
     return {
         statusCode: 200,
-        body: JSON.stringify(token)
+        body: await tokenRes.text()
     };
 }
