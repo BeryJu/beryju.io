@@ -22,14 +22,26 @@ HUGO_VERSION = "0.87.0"
 [context.next.environment]
 HUGO_ENABLEGITINFO = "true"
 
+# [[redirects]]
+#   from = "/v2/"
+#   to = "https://ghcr.registry.beryju.org/v2/"
+#   status = 200
+#   force = true
+
+# [[redirects]]
+#   from = "/v2/*"
+#   to = "https://ghcr.registry.beryju.org/v2/beryju/:splat"
+#   status = 200
+#   force = true
+
 [[redirects]]
   from = "/v2/"
-  to = "https://ghcr.registry.beryju.org/v2/"
+  to = "https://ghcr.io/v2/"
   status = 200
   force = true
 
 [[redirects]]
   from = "/v2/*"
-  to = "https://ghcr.registry.beryju.org/v2/beryju/:splat"
+  to = "https://ghcr.io/v2/beryju/:splat"
   status = 200
   force = true
