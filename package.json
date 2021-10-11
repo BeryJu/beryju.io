@@ -18,13 +18,13 @@
     "autoprefixer": "^10.2.6",
     "clipboard-polyfill": "^3.0.3",
     "flexsearch": "^0.7.1",
+    "node-fetch": "^3.0.0",
     "postcss": "^8.3.5",
     "postcss-cli": "^8.3.1",
     "postcss-import": "^14.0.2",
     "tailwindcss": "^2.2.4",
     "zooming": "^2.1.1"
   },
-  "devDependencies": {},
   "name": "beryjuorg",
   "version": "0.1.0"
 }
