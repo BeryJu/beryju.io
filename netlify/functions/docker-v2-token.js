@@ -1,9 +1,13 @@
 exports.handler = async function (event, context) {
+    const scope = `scope="repository:user/image:pull"`;
+    const tokenRes = await fetch(
+        {
+            url: `https://ghcr.io/token?service=ghcr.io&scope=${scope}`,
+            method: "GET",
+        }
+    ).json()
     return {
-        statusCode: 400,
-        headers: {
-            "www-authenticate": `Bearer realm="https://${event.headers.Host}/token",service="ghcr.io",scope="repository:beryju/acme-for-appliances:pull"`
-        },
-        body: JSON.stringify({})
+        statusCode: 200,
+        body: JSON.stringify(token)
     };
 }

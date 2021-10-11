@@ -1,3 +1,6 @@
+[dev]
+framework = "hugo"
+
 [build]
 publish = "public"
 command = "hugo --gc --minify"
@@ -22,6 +25,8 @@ HUGO_VERSION = "0.87.0"
 [context.next.environment]
 HUGO_ENABLEGITINFO = "true"
 
+# Working with artifactory
+
 # [[redirects]]
 #   from = "/v2/"
 #   to = "https://ghcr.registry.beryju.org/v2/"
@@ -36,7 +41,13 @@ HUGO_ENABLEGITINFO = "true"
 
 [[redirects]]
   from = "/v2/"
-  to = "https://ghcr.io/v2/"
+  to = "https://beryjuorg.netlify.app/.netlify/functions/docker-v2"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/v2/_token"
+  to = "https://beryjuorg.netlify.app/.netlify/functions/docker-v2-token"
   status = 200
   force = true
 
