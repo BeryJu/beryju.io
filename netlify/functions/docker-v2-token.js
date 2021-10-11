@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 exports.handler = async function (event, context) {
     const scope = `scope="repository:user/image:pull"`;
     const tokenRes = await fetch(
