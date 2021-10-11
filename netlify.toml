@@ -27,29 +27,29 @@ HUGO_ENABLEGITINFO = "true"
 
 # Working with artifactory
 
-# [[redirects]]
-#   from = "/v2/"
-#   to = "https://ghcr.registry.beryju.org/v2/"
-#   status = 200
-#   force = true
-
-# [[redirects]]
-#   from = "/v2/*"
-#   to = "https://ghcr.registry.beryju.org/v2/beryju/:splat"
-#   status = 200
-#   force = true
+[[redirects]]
+  from = "/v2/"
+  to = "https://ghcr.registry.beryju.org/v2/"
+  status = 200
+  force = true
 
 [[redirects]]
   from = "/v2/*"
-  to = "https://beryjuorg.netlify.app/.netlify/functions/docker-v2"
+  to = "https://ghcr.registry.beryju.org/v2/beryju/:splat"
   status = 200
   force = true
 
-[[redirects]]
-  from = "/v2/_token"
-  to = "https://beryjuorg.netlify.app/.netlify/functions/docker-v2-token"
-  status = 200
-  force = true
+# [[redirects]]
+#   from = "/v2/*"
+#   to = "https://beryjuorg.netlify.app/.netlify/functions/docker-v2"
+#   status = 200
+#   force = true
+
+# [[redirects]]
+#   from = "/v2/_token"
+#   to = "https://beryjuorg.netlify.app/.netlify/functions/docker-v2-token"
+#   status = 200
+#   force = true
 
 # [[redirects]]
 #   from = "/v2/*"
