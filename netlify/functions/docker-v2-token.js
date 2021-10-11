@@ -1,8 +1,8 @@
 exports.handler = async function (event, context) {
     const fetch = await import('node-fetch');
-    console.log(event);
-    console.log(context);
-    const scope = `repository:user/image:pull`;
+    const upstreamScope = event.queryStringParameters["scope"];
+    const repo = upstreamScope.split(":");
+    const scope = `repository:beryju/${repo}:pull`;
     const tokenRes = await fetch.default(`https://ghcr.io/token?service=ghcr.io&scope=${scope}`);
     console.log(tokenRes)
     return {

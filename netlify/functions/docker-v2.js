@@ -1,11 +1,6 @@
 exports.handler = async function (event, context) {
-    console.log(event.httpMethod);
-    if (event.httpMethod !== "HEAD") {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({})
-        };
-    }
+    console.log(event);
+    console.log(context);
     return {
         statusCode: 200,
         headers: {
