@@ -34,9 +34,11 @@ async function getToken(event) {
     const tokenRes = await fetch.default(tokenUrl, {
         headers: event.headers,
     });
+    const tokenResult = await tokenRes.text();
+    console.debug(`oci-proxy[token]: Status ${tokenRes.status} body '${tokenResult}'`)
     return {
         statusCode: tokenRes.status,
-        body: await tokenRes.text()
+        body: tokenResult,
     };
 }
 
