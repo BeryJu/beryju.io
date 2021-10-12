@@ -47,6 +47,17 @@ exports.handler = async function (event, context) {
         console.debug("oci-proxy: handler=token proxy");
         return await getToken(event);
     }
+    if (event.headers.authorization && event.headers.authorization.startsWith("Bearer ")) {
+        console.debug("oci-proxy: authenticated root handler, returning 200");
+        return {
+            statusCode: 200,
+            headers: {
+                "Docker-Distribution-API-Version": "registry/2.0",
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({}),
+        }
+    }
     console.debug("oci-proxy: root handler, returning 401 with www-authenticate");
     return {
         statusCode: 401,
@@ -55,6 +66,6 @@ exports.handler = async function (event, context) {
             "Docker-Distribution-API-Version": "registry/2.0",
             "content-type": "application/json",
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({}),
     };
 }
