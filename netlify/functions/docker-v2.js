@@ -20,7 +20,7 @@ exports.handler = async function (event, context) {
     return {
         statusCode: 401,
         headers: {
-            "www-authenticate": `Bearer realm="https://${event.headers.host}/token",service="${event.headers.host}",scope="repository:user/image:pull"`,
+            "www-authenticate": `Bearer realm="https://${event.headers.host}/v2?token",service="${event.headers.host}",scope="repository:user/image:pull"`,
             "Docker-Distribution-API-Version": "registry/2.0",
             "content-type": "application/json",
         },
