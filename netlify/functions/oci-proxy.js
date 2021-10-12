@@ -1,7 +1,13 @@
 const config = {
-    namespace: "beryju/",
-    registry: "ghcr.io",
-    registryTokenEndpoint: "ghcr.io/token"
+    namespace: "",
+    // Settings for GHCR
+    // registry: "ghcr.io",
+    // registryTokenEndpoint: "ghcr.io/token"
+    // registryService: "ghcr.io",
+    // Settings for Harbor
+    registry: "docker.beryju.org",
+    registryTokenEndpoint: "docker.beryju.org/service/token",
+    registryService: "harbor-registry",
 };
 
 async function getToken(event) {
