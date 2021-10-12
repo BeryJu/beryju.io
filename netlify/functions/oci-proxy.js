@@ -1,11 +1,11 @@
 const config = {
-    namespace: "",
+    namespace: "beryju/",
     // Settings for GHCR
-    // registryTokenEndpoint: "https://ghcr.io/token"
-    // registryService: "ghcr.io",
+    registryTokenEndpoint: "https://ghcr.io/token",
+    registryService: "ghcr.io",
     // Settings for Harbor
-    registryTokenEndpoint: "https://docker.beryju.org/service/token",
-    registryService: "harbor-registry",
+    // registryTokenEndpoint: "https://docker.beryju.org/service/token",
+    // registryService: "harbor-registry",
 };
 
 async function getToken(event) {
@@ -42,7 +42,6 @@ async function getToken(event) {
 
 exports.handler = async function (event, context) {
     console.debug(`oci-proxy: URL ${event.httpMethod} ${event.rawUrl}`);
-    console.debug(event);
     if (event.queryStringParameters.hasOwnProperty("token")) {
         console.debug("oci-proxy: handler=token proxy");
         return await getToken(event);
