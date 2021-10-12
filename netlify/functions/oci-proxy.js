@@ -28,6 +28,8 @@ async function getToken(event) {
 }
 
 exports.handler = async function (event, context) {
+    console.debug(`oci-proxy: URL ${event.headers.host}${event.path}`);
+    console.debug(event);
     if (event.queryStringParameters.hasOwnProperty("token")) {
         console.debug("oci-proxy: token proxy");
         return await getToken(event);
