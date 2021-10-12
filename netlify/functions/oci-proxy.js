@@ -16,7 +16,7 @@ async function getToken(event) {
     const repo = upstreamScope.split(":")[1];
     const scope = `repository:${config.namespace}${repo}:pull`;
     console.debug(`oci-proxy: getting token with scope ${scope}`);
-    const tokenRes = await fetch.default(`https://${config.registryTokenEndpoint}?service=${config.registry}&scope=${scope}`);
+    const tokenRes = await fetch.default(`https://${config.registryTokenEndpoint}?service=${config.registryService}&scope=${scope}`);
     return {
         statusCode: tokenRes.status,
         body: await tokenRes.text()
