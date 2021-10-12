@@ -13,14 +13,17 @@ const config = {
 async function getToken(event) {
     const fetch = await import('node-fetch');
     let scope = event.queryStringParameters["scope"];
-    if (scope.includes(":")) {
+    let tokenUrl = `https://${config.registryTokenEndpoint}?service=${config.registryService}`;
+    if (scope && scope.includes(":")) {
         const repo = scope.split(":")[1];
         console.debug(`oci-proxy: original scope: ${scope}`);
         scope = `repository:${config.namespace}${repo}:pull`;
         console.debug(`oci-proxy: rewritten scope: ${scope}`);
+        tokenUrl += `&scope=${scope}`;
+    } else {
+        console.debug(`oci-proxy: no scope`);
     }
-    console.debug(`oci-proxy: getting token with scope ${scope}`);
-    const tokenRes = await fetch.default(`https://${config.registryTokenEndpoint}?service=${config.registryService}&scope=${scope}`);
+    const tokenRes = await fetch.default(tokenUrl);
     return {
         statusCode: tokenRes.status,
         body: await tokenRes.text()
@@ -28,8 +31,7 @@ async function getToken(event) {
 }
 
 exports.handler = async function (event, context) {
-    console.debug(`oci-proxy: URL ${event.headers.host}${event.path}`);
-    console.debug(event);
+    console.debug(`oci-proxy: URL ${event.httpMethod} ${event.rawUrl}`);
     if (event.queryStringParameters.hasOwnProperty("token")) {
         console.debug("oci-proxy: token proxy");
         return await getToken(event);
