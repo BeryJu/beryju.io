@@ -22,7 +22,7 @@
     "postcss": "^8.3.5",
     "postcss-cli": "^9.0.1",
     "postcss-import": "^14.0.2",
-    "tailwindcss": "^2.2.4",
+    "tailwindcss": "^2.2.16",
     "zooming": "^2.1.1"
   },
   "name": "beryjuorg",
