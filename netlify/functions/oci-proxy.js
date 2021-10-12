@@ -15,12 +15,16 @@ async function getToken(event) {
     let tokenParams = {
         service: config.registryService,
     };
+    delete event.headers.host;
+    let forwardHeaders = event.headers;
     if (scope && scope.includes(":")) {
         const repo = scope.split(":")[1];
         console.debug(`oci-proxy[token]: original scope: ${scope}`);
         scope = `repository:${config.namespace}${repo}:pull`;
         console.debug(`oci-proxy[token]: rewritten scope: ${scope}`);
         tokenParams["scope"] = scope;
+        // We only need to forward headers for authentication requests
+        forwardHeaders = {};
     } else {
         console.debug(`oci-proxy[token]: no scope`);
         // For non-scoped requests, we need to forward some URL parameters
@@ -30,9 +34,8 @@ async function getToken(event) {
     }
     const tokenUrl = `${config.registryTokenEndpoint}?${querystring.stringify(tokenParams)}`
     console.debug(`oci-proxy[token]: final URL to fetch: ${tokenUrl}`)
-    delete event.headers.host;
     const tokenRes = await fetch.default(tokenUrl, {
-        headers: event.headers,
+        headers: forwardHeaders,
     });
     const tokenResult = await tokenRes.text();
     console.debug(`oci-proxy[token]: Status ${tokenRes.status} body '${tokenResult}'`)
