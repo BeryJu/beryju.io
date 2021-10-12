@@ -23,6 +23,7 @@ async function getToken(event) {
     } else {
         console.debug(`oci-proxy: no scope`);
     }
+    console.debug(`oci-proxy: final URL to fetch: ${tokenUrl}`)
     const tokenRes = await fetch.default(tokenUrl);
     return {
         statusCode: tokenRes.status,
@@ -33,7 +34,7 @@ async function getToken(event) {
 exports.handler = async function (event, context) {
     console.debug(`oci-proxy: URL ${event.httpMethod} ${event.rawUrl}`);
     if (event.queryStringParameters.hasOwnProperty("token")) {
-        console.debug("oci-proxy: token proxy");
+        console.debug("oci-proxy: handler=token proxy");
         return await getToken(event);
     }
     console.debug("oci-proxy: root handler, returning 401 with www-authenticate");
