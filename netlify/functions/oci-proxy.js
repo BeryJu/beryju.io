@@ -30,7 +30,9 @@ async function getToken(event) {
     }
     const tokenUrl = `${config.registryTokenEndpoint}?${querystring.stringify(tokenParams)}`
     console.debug(`oci-proxy[token]: final URL to fetch: ${tokenUrl}`)
-    const tokenRes = await fetch.default(tokenUrl);
+    const tokenRes = await fetch.default(tokenUrl, {
+        headers: event.headers,
+    });
     return {
         statusCode: tokenRes.status,
         body: await tokenRes.text()
