@@ -25,23 +25,9 @@ HUGO_VERSION = "0.87.0"
 [context.next.environment]
 HUGO_ENABLEGITINFO = "true"
 
-# Working with artifactory
-# [[redirects]]
-#   from = "/v2/"
-#   to = "https://ghcr.registry.beryju.org/v2/"
-#   status = 200
-#   force = true
-
-# [[redirects]]
-#   from = "/v2/*"
-#   to = "https://ghcr.registry.beryju.org/v2/beryju/:splat"
-#   status = 200
-#   force = true
-# End
-
 [[redirects]]
   from = "/v2"
-  to = "https://beryjuorg.netlify.app/.netlify/functions/oci-v2"
+  to = "https://beryjuorg.netlify.app/.netlify/functions/oci-proxy"
   status = 200
   force = true
 

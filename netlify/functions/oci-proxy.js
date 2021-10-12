@@ -18,12 +18,11 @@ async function getToken(event) {
 }
 
 exports.handler = async function (event, context) {
-    console.log(event);
     if (event.queryStringParameters.hasOwnProperty("token")) {
-        console.debug("oci-proxy: returning token");
+        console.debug("oci-proxy: token proxy");
         return await getToken(event);
     }
-    console.debug("oci-proxy: fallback, returning 401");
+    console.debug("oci-proxy: root handler, returning 401 with www-authenticate");
     return {
         statusCode: 401,
         headers: {
