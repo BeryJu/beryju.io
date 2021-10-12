@@ -1,29 +1,35 @@
 const config = {
     namespace: "",
     // Settings for GHCR
-    // registry: "ghcr.io",
-    // registryTokenEndpoint: "ghcr.io/token"
+    // registryTokenEndpoint: "https://ghcr.io/token"
     // registryService: "ghcr.io",
     // Settings for Harbor
-    registry: "docker.beryju.org",
-    registryTokenEndpoint: "docker.beryju.org/service/token",
+    registryTokenEndpoint: "https://docker.beryju.org/service/token",
     registryService: "harbor-registry",
 };
 
 async function getToken(event) {
     const fetch = await import('node-fetch');
+    const querystring = await import('querystring');
     let scope = event.queryStringParameters["scope"];
-    let tokenUrl = `https://${config.registryTokenEndpoint}?service=${config.registryService}`;
+    let tokenParams = {
+        service: config.registryService,
+    };
     if (scope && scope.includes(":")) {
         const repo = scope.split(":")[1];
-        console.debug(`oci-proxy: original scope: ${scope}`);
+        console.debug(`oci-proxy[token]: original scope: ${scope}`);
         scope = `repository:${config.namespace}${repo}:pull`;
-        console.debug(`oci-proxy: rewritten scope: ${scope}`);
-        tokenUrl += `&scope=${scope}`;
+        console.debug(`oci-proxy[token]: rewritten scope: ${scope}`);
+        tokenParams["scope"] = scope;
     } else {
-        console.debug(`oci-proxy: no scope`);
+        console.debug(`oci-proxy[token]: no scope`);
+        // For non-scoped requests, we need to forward some URL parameters
+        ["account", "client_id", "offline_token", "token"].forEach(param => {
+            tokenParams[param] = event.queryStringParameters[param]
+        });
     }
-    console.debug(`oci-proxy: final URL to fetch: ${tokenUrl}`)
+    const tokenUrl = `${config.registryTokenEndpoint}?${querystring.stringify(tokenParams)}`
+    console.debug(`oci-proxy[token]: final URL to fetch: ${tokenUrl}`)
     const tokenRes = await fetch.default(tokenUrl);
     return {
         statusCode: tokenRes.status,
@@ -33,6 +39,7 @@ async function getToken(event) {
 
 exports.handler = async function (event, context) {
     console.debug(`oci-proxy: URL ${event.httpMethod} ${event.rawUrl}`);
+    console.debug(event);
     if (event.queryStringParameters.hasOwnProperty("token")) {
         console.debug("oci-proxy: handler=token proxy");
         return await getToken(event);
