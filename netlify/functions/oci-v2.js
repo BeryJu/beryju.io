@@ -9,6 +9,7 @@ async function getToken(event) {
     const upstreamScope = event.queryStringParameters["scope"];
     const repo = upstreamScope.split(":");
     const scope = `repository:${config.namespace}${repo}:pull`;
+    console.debug(`oci-proxy: getting token with scope ${scope}`);
     const tokenRes = await fetch.default(`https://${config.registryTokenEndpoint}?service=${config.registry}&scope=${scope}`);
     return {
         statusCode: 200,
@@ -17,12 +18,12 @@ async function getToken(event) {
 }
 
 exports.handler = async function (event, context) {
+    console.log(event);
     if (event.queryStringParameters.hasOwnProperty("token")) {
-        console.debug("oci-proxy: returning token")
+        console.debug("oci-proxy: returning token");
         return await getToken(event);
     }
-    console.log(event);
-    console.debug("oci-proxy: fallback, returning 401")
+    console.debug("oci-proxy: fallback, returning 401");
     return {
         statusCode: 401,
         headers: {
