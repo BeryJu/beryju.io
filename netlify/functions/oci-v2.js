@@ -7,12 +7,12 @@ const config = {
 async function getToken(event) {
     const fetch = await import('node-fetch');
     const upstreamScope = event.queryStringParameters["scope"];
-    const repo = upstreamScope.split(":");
+    const repo = upstreamScope.split(":")[1];
     const scope = `repository:${config.namespace}${repo}:pull`;
     console.debug(`oci-proxy: getting token with scope ${scope}`);
     const tokenRes = await fetch.default(`https://${config.registryTokenEndpoint}?service=${config.registry}&scope=${scope}`);
     return {
-        statusCode: 200,
+        statusCode: tokenRes.status,
         body: await tokenRes.text()
     };
 }
