@@ -41,7 +41,7 @@ HUGO_ENABLEGITINFO = "true"
 
 [[redirects]]
   from = "/v2"
-  to = "https://beryjuorg.netlify.app/.netlify/functions/docker-v2"
+  to = "https://beryjuorg.netlify.app/.netlify/functions/oci-v2"
   status = 200
   force = true
 
