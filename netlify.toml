@@ -41,3 +41,5 @@ HUGO_ENABLEGITINFO = "true"
 [[redirects]]
   from = "/v2/*"
   to = "https://ghcr.io/v2/beryju/:splat"
+  status = 200
+  force = true
