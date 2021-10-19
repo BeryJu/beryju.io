@@ -6,6 +6,6 @@ exports.handler = async function (event, context) {
         headers: {
             "content-type": "text/html",
         },
-        body: `<meta name="go-import" content="${event.headers.host}${event.path} git https://github.com/${gitHubNamespace}${event.path}.git">`
+        body: `<meta name="go-import" content="${event.headers.host}${event.path} git https://github.com/${gitHubNamespace}${event.path}">`
     };
 }
