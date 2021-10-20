@@ -43,3 +43,15 @@ HUGO_ENABLEGITINFO = "true"
   to = "https://ghcr.io/v2/beryju/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/js/script.js"
+  to = "https://plausible.io/js/plausible.outbound-links.js"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/event"
+  to = "https://analytics.beryju.org/api/event"
+  status = 200
+  force = true

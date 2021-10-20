@@ -1,8 +1,7 @@
 <link rel="stylesheet" href="{{.Site.BaseURL}}/css/override.css">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6985699970333869" crossorigin="anonymous"></script>
-<script async defer data-domain="beryju.org" src="https://public.s3.beryju.org/plausibl.js"></script>
+<script async defer data-domain="beryju.org" src="https://beryju.org/js/script.js"></script>
 {{ range .AlternativeOutputFormats -}}
 {{ printf `
 <link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
 {{ end -}}
-<meta name="go-import" content="beryju.org git https://github.com/BeryJu">
