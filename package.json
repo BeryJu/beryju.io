@@ -19,7 +19,7 @@
     "clipboard-polyfill": "^3.0.3",
     "flexsearch": "^0.7.1",
     "node-fetch": "^3.0.0",
-    "postcss": "^8.3.9",
+    "postcss": "^8.3.10",
     "postcss-cli": "^9.0.1",
     "postcss-import": "^14.0.2",
     "tailwindcss": "^2.2.17",
