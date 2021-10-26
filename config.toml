@@ -13,7 +13,7 @@ email = "jens@beryju.org"
 [params]
   contentTypeName = "blog"
   defaultTheme = "dark"
-  showMenuItems = 2
+  showMenuItems = 3
   showReadingTime = true
 [languages]
   [languages.en]
@@ -42,5 +42,9 @@ email = "jens@beryju.org"
         url = "https://jela.io"
       [[languages.en.menu.main]]
         identifier = "github"
-        name = "Github"
+        name = "GitHub"
         url = "https://github.com/BeryJu"
+      [[languages.en.menu.main]]
+        identifier = "support_me"
+        name = "Support me"
+        url = "https://github.com/sponsors/BeryJu"
