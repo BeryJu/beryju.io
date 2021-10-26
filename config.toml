@@ -3,7 +3,6 @@ languageCode = "en-us"
 title = "BeryJu.org"
 theme = "hello-friend"
 disqusShortname = "beryju"
-googleAnalytics = "UA-39172069-5"
 paginate = 5
 enableGitInfo = true
 
