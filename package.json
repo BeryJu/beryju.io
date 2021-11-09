@@ -18,7 +18,7 @@
     "autoprefixer": "^10.4.0",
     "clipboard-polyfill": "^3.0.3",
     "flexsearch": "^0.7.1",
-    "node-fetch": "^3.0.0",
+    "node-fetch": "^3.1.0",
     "postcss": "^8.3.11",
     "postcss-cli": "^9.0.2",
     "postcss-import": "^14.0.2",
