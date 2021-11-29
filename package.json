@@ -14,7 +14,7 @@
     "devDependencies": {}
   },
   "dependencies": {
-    "@fullhuman/postcss-purgecss": "^4.0.3",
+    "@fullhuman/postcss-purgecss": "^4.1.1",
     "autoprefixer": "^10.4.0",
     "clipboard-polyfill": "^3.0.3",
     "flexsearch": "^0.7.1",
