@@ -1,6 +1,6 @@
-baseURL = "https://beryju.org"
+baseURL = "https://beryju.io"
 languageCode = "en-us"
-title = "BeryJu.org"
+title = "BeryJu.io"
 theme = "hello-friend"
 disqusShortname = "beryju"
 paginate = 5
@@ -17,7 +17,7 @@ email = "jens@beryju.org"
   showReadingTime = true
 [languages]
   [languages.en]
-    title = "BeryJu.org"
+    title = "BeryJu.io"
     subtitle = ""
     keywords = ""
     copyright = ""
@@ -32,7 +32,7 @@ email = "jens@beryju.org"
     dateFormatList = "2006-01-02"
 
     [languages.en.params.logo]
-      logoText = "BeryJu.org"
+      logoText = "BeryJu.io"
       logoHomeLink = "/"
 
     [languages.en.menu]
