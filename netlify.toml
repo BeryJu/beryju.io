@@ -27,14 +27,14 @@ HUGO_ENABLEGITINFO = "true"
 
 [[redirects]]
   from = "/*"
-  to = "https://beryjuorg.netlify.app/.netlify/functions/go-get"
+  to = "https://beryju.io/.netlify/functions/go-get"
   status = 200
   force = true
   query = {go-get = "1"}
 
 [[redirects]]
   from = "/v2"
-  to = "https://beryjuorg.netlify.app/.netlify/functions/oci-proxy"
+  to = "https://beryju.io/.netlify/functions/oci-proxy"
   status = 200
   force = true
 
