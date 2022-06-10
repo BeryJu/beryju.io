@@ -8,4 +8,4 @@ exports.handler = async function (event, context) {
         },
         body: `<meta name="go-import" content="${event.headers.host}${event.path} git https://github.com/${gitHubNamespace}${event.path}">`
     };
-}
+};
