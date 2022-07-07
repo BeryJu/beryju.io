@@ -29,7 +29,7 @@ HUGO_ENABLEGITINFO = "true"
   from = "/*"
   to = "https://beryju.io/.netlify/functions/go-get"
   status = 200
-  force = false
+  force = true
   query = {go-get = "1"}
 
 [[redirects]]
