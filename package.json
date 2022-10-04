@@ -17,7 +17,7 @@
     "@fullhuman/postcss-purgecss": "^5.0.0",
     "autoprefixer": "^10.4.12",
     "clipboard-polyfill": "^3.0.3",
-    "flexsearch": "^0.7.1",
+    "flexsearch": "^0.7.31",
     "node-fetch": "^3.2.10",
     "postcss": "^8.4.17",
     "postcss-cli": "^10.0.0",
