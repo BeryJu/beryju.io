@@ -55,3 +55,15 @@ HUGO_ENABLEGITINFO = "true"
   to = "https://analytics.beryju.org/api/event"
   status = 200
   force = true
+
+[[redirects]]
+  from = "http://beryju.org/*"
+  to = "https://beryju.io/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://beryju.org/*"
+  to = "https://beryju.io/:splat"
+  status = 301
+  force = true
