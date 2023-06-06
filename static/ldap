@@ -1,0 +1,11 @@
+<html>
+
+<head>
+    <meta name="go-import" content="beryju.io/ldap git https://github.com/beryju/ldap">
+</head>
+
+<body>
+    <pre><code>go get beryju.io/ldap</code></pre>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+<html>
+
+<head>
+    <meta name="go-import" content="beryju.io/gravity git https://github.com/beryju/gravity">
+</head>
+
+<body>
+    <pre><code>go get beryju.io/gravity</code></pre>
+</body>
+
+</html>

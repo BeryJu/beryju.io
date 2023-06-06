@@ -1,0 +1,11 @@
+<html>
+
+<head>
+    <meta name="go-import" content="beryju.io/oidc-test-client git https://github.com/beryju/oidc-test-client">
+</head>
+
+<body>
+    <pre><code>go get beryju.io/oidc-test-client</code></pre>
+</body>
+
+</html>
