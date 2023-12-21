@@ -81,7 +81,7 @@ This service then needs to be publicly accessible, in this case I created a Kube
 
 ## Setup the registry itself
 
-Now, while [this PR](https://github.com/distribution/distribution/pull/3625) is still open, you need a custom build of the registry. I built `ghcr.io/beryju/registry:jwt` for my own setup, so feel free to use that. The complete configuration of the registry will not be covered here, check the reference [here](https://docs.docker.com/registry/configuration/).
+**This requires version 3 of the official docker registry, which is currently in Alpha. For this setup I used `docker.io/library/registry:3.0.0-alpha.1`.**
 
 The downloaded certificate from authentik also needs to be mounted into the container.
 
@@ -91,7 +91,7 @@ The main configuration options required for this setup are these environment var
 REGISTRY_AUTH_TOKEN_REALM=https://registry.company/token # Full URL to the /token endpoint of the helper service
 REGISTRY_AUTH_TOKEN_SERVICE=693e60deada0b71e8ecb3d078e4ebaaf08624e55 # Same client ID as above
 REGISTRY_AUTH_TOKEN_ISSUER=https://id.company/application/o/docker-registry/ # Issuer of the JWT,
-REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/srv/docker/cert/trusted.pem # Path to the mounted certificate
+REGISTRY_AUTH_TOKEN_JWKS=/srv/docker/cert/trusted.pem # Path to the mounted certificate
 ```
 
 # Before you can use it
