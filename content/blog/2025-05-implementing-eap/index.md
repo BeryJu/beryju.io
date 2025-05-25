@@ -2,15 +2,15 @@
 title: "Implementing EAP, EAP-TLS and more (mostly) from scratch"
 date: "2025-05-25"
 taxonomy:
-    category:
-        - blog
-    tag:
-        - radius
-        - eap
-        - eap-tls
-        - tls
-    author:
-        - jens
+  category:
+    - blog
+  tag:
+    - radius
+    - eap
+    - eap-tls
+    - tls
+  author:
+    - jens
 ---
 
 The first question you might be asking yourself after reading the title of this post is "Why in the @#$%&! would you do that". If that wasn't the first thing that came to your mind, you're probably wondering what EAP even is and why you should be so taken aback. Don't worry, I will try to answer both of these questions with this blog post.
@@ -36,7 +36,7 @@ RADIUS is a request-challenge-response format protocol, where a device (usually 
 
 Each RADIUS packet can contain a varying number of [Attributes](https://datatracker.ietf.org/doc/html/rfc2865#section-5) (also called AVPs - Attribute Value Pairs) which are used to exchange data and authentication challenges/responses between RADIUS server and client. Each attribute has a unique, well defined ID, and can be set multiple times in a single RADIUS packet to allow for larger messages as the value is limited to 255 bytes.
 
-[EAP] is a protocol that does not need to used within RADIUS, however in the context of this blog post we will only use it within RADIUS (and later on even within itself). In RADIUS, EAP data is stored in an Attribute Value Pair with the ID [79](https://datatracker.ietf.org/doc/html/rfc3579#section-3.1). EAP also supports multiple types of "sub-protocols" within it, all denoted by a well defined ID. This means that the RADIUS client and server can negotiate on which protocol to use, for example based on the configuration of each side.
+[EAP] is a protocol that does not need to be used within RADIUS, however in the context of this blog post we will only use it within RADIUS (and later on even within itself). In RADIUS, EAP data is stored in an Attribute Value Pair with the ID [79](https://datatracker.ietf.org/doc/html/rfc3579#section-3.1). EAP also supports multiple types of "sub-protocols" within it, all denoted by a well defined ID. This means that the RADIUS client and server can negotiate on which protocol to use, for example based on the configuration of each side.
 
 TLS and all other protocols are then sent back and forth within EAP, and aside from TLS these protocols will be talked about in their respective section.
 
@@ -60,7 +60,15 @@ After some testing I was able to get some initial data from Go's `tls.Server`'s 
 
 ## Fusing together two different worlds
 
-For those reading that have used `tls.Server` in Go, or in fact any network protocol in Go offer a somewhat similar interface to an open file. They have a `Read()` and a `Write()` method, and expect to be given an object with the same methods as an underlying network transport.
+For those reading that have used `tls.Server` in Go, or in fact any network protocol in Go offer a somewhat similar interface to an open file.
+
+```go
+// A rough look at what methods a network connection usually implement
+type NetworkConnection interface {
+    Read([]byte) (int, error)
+    Write([]byte) error
+}
+```
 
 In most cases, this makes sense. It allows for the protocol to consume as much data as it needs, do processing on it and send back as much data it wants to. And initially this is how I wanted to implement all of this as that would make composing protocols within each other very simple.
 
@@ -68,10 +76,24 @@ However this turned out to not be as easy as initially thought due to how much s
 
 My solution to this was to create an custom buffered connection I'd parse to `tls.Server`, which buffers both incoming and outgoing data. You might ask; Why incoming data too? Turns out that the client can also send us more data than fits in a single packet. We do however get told how much data we should be expecting, so we can save incoming data into memory, tell the client to send us the next chunk and repeat until we have everything.
 
+The implementation for this functions roughly functions as follows:
+
+- Incoming packets have a field for their total length and whether more fragments will follow, so we know how much data to anticipate.
+- We store the incoming data in memory as well as the total expected length, and continue to give the client the go-ahead to send us more data.
+- Whenever we get the final packet from the client and we have all the data we pass it to Go's TLS library.
+- Due to the way the Go's TLS server is implemented, we basically just wait for it to have data to send out.
+- To send out the data we do the reverse as above, we know how much total data we have to send, so we chunk it into smaller requests, and after each request we wait for the client to send us the go-ahead to continue.
+- After Go's `Handshake` method completes, we know that the handshake is done (and if any errors happened).
+
+**Importantly**, even after the handshake is done on the server-side, there might be more data that needs to be transferred. This I didn't know initially; and it took quite a bit of time to figure out why things weren't working.
+
+For EAP-TLS specifically, this basically finishes the authentication. EAP-TLS uses TLS Client Certificates for authentication, so the RADIUS server will validate the certificate and determine the result of the authentication based on that.
+
+{{< figure src="eap-tls-success.png" position="center" caption="An unbelievable amount of glee befell me once I finally saw the first 'SUCCESS' message." >}}
 
 [authentik]: https://goauthentik.io
+[freeradius]: https://www.freeradius.org
 [RADIUS]: https://datatracker.ietf.org/doc/html/rfc2865
 [PAP]: https://datatracker.ietf.org/doc/html/rfc2865#section-5.2
-[freeradius]: https://www.freeradius.org
 [EAP]: https://datatracker.ietf.org/doc/html/rfc3748
 [EAP-TLS]: https://datatracker.ietf.org/doc/html/rfc5216
