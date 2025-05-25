@@ -1,0 +1,54 @@
+baseURL: https://beryju.io
+languageCode: en-us
+title: BeryJu.io
+disqusShortname: beryju
+enableGitInfo: true
+author:
+  name: Jens Langhammer
+  email: jens@beryju.org
+module:
+  proxy: direct
+  imports:
+    - path: github.com/panr/hugo-theme-hello-friend
+      disable: false
+pagination:
+  pagerSize: 5
+params:
+  contentTypeName: blog
+  defaultTheme: dark
+  showMenuItems: 3
+  showReadingTime: true
+languages:
+  en:
+    title: BeryJu.io
+    subtitle: ""
+    keywords: ""
+    copyright: ""
+    menuMore: Show more
+    writtenBy: Written by
+    readMore: Read more
+    readOtherPosts: Read other posts
+    newerPosts: Newer posts
+    olderPosts: Older posts
+    minuteReadingTime: min read
+    dateFormatSingle: 2006-01-02
+    dateFormatList: 2006-01-02
+    params:
+      logo:
+        logoText: BeryJu.io
+        logoHomeLink: /
+    menu:
+      main:
+        - identifier: about
+          name: About
+          url: https://jela.io
+        - identifier: github
+          name: GitHub
+          url: https://github.com/BeryJu
+        - identifier: support_me
+          name: Support me
+          url: https://github.com/sponsors/BeryJu
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
