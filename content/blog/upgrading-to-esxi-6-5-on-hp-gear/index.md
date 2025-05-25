@@ -1,7 +1,7 @@
 ---
 title: 'Upgrading to ESXi 6.5 on HP gear'
 date: '2020-04-26T18:04:00+02:00'
-published: true
+draft: false
 metadata:
     description: 'It''s been a day since vSphere 6,5 came out, and sysadmins all over the world have been updating their test systems. This works really well if you update to vCenter 6.5 first, since it has the Update Manager integrated. However...'
 taxonomy:

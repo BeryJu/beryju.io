@@ -1,6 +1,6 @@
 ---
 title: 'BeryJu.org goes Colo'
-published: true
+draft: false
 date: '2017-06-14T21:40:00+02:00'
 taxonomy:
     category:
