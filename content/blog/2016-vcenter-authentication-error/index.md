@@ -1,6 +1,6 @@
 ---
 title: 'vCenter Authentication Error'
-published: true
+draft: false
 date: '2016-05-31T21:54:00+02:00'
 taxonomy:
     category:

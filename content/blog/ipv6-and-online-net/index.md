@@ -1,7 +1,7 @@
 ---
 title: 'IPv6 and online.net'
 date: '2020-04-12T18:04:00+02:00'
-published: true
+draft: false
 metadata:
     keywords: 'online, onlinenet, ipv6, ip6, vyos, esxi, vmware, vsphere, dedicated, dedi, dedibox'
 taxonomy:

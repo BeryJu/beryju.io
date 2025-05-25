@@ -1,6 +1,6 @@
 ---
 title: 'My Thoughts about Puppet 4'
-published: true
+draft: false
 date: '2016-07-24T22:00:00+02:00'
 taxonomy:
     category:

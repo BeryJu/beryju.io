@@ -1,6 +1,6 @@
 ---
 title: 'Getting Started with Foreman: Part 3'
-published: true
+draft: false
 date: '2016-07-18T00:00:00+02:00'
 metadata:
     keywords: 'foreman,provisioning,getting-started-with,tutorial,vmware,esxi,debian,dhcp,dns,tftp,getting-started-with-foreman'
