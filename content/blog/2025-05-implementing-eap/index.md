@@ -78,13 +78,13 @@ After some testing I was able to get some initial data from Go's `tls.Server`'s 
 
 For those reading that have used `tls.Server` in Go, or in fact any network protocol in Go, you'll know that it offer a somewhat similar interface to an open file.
 
-```go
-// A rough look at what methods a network connection usually implement
+{{< code language="go" title="" isCollapsed="false" >}}
+// A rough example at what methods a network connection usually implement
 type NetworkConnection interface {
     Read([]byte) (int, error)
     Write([]byte) error
 }
-```
+{{< /code >}}
 
 In most cases, this makes sense. It allows for the protocol to consume as much data as it needs, do processing on it and send back as much data it wants to. And initially this is how I wanted to implement all of this as that would make composing protocols within each other very simple.
 
@@ -121,7 +121,7 @@ Reading further into [this](https://datatracker.ietf.org/doc/html/rfc2548#sectio
 
 Looking into implementing this once again sent me through the source code of wpa_supplicant, and seeing what they do:
 
-```cpp
+{{< code language="cpp" title="src/eap_peer/eap_tls.c" isCollapsed="false" >}}
 static void eap_tls_success(struct eap_sm *sm, struct eap_tls_data *data,
                             struct eap_method_ret *ret)
 {
@@ -150,7 +150,7 @@ static void eap_tls_success(struct eap_sm *sm, struct eap_tls_data *data,
                 wpa_printf(MSG_INFO, "EAP-TLS: Failed to derive key");
         }
 }
-```
+{{< /code >}}
 
 This led me down the road to figuring out `eap_peer_tls_derive_key`, then `tls_connection_export_key` and finally `SSL_export_keying_material`. Once again after looking around some more this led me to the Go equivalent, `ExportKeyingMaterial()`.
 
