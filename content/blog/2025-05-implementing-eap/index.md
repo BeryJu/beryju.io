@@ -50,7 +50,7 @@ TLS and all other protocols are then sent back and forth within EAP, and aside f
 
 So far, everything we looked at is transmitted as plain text over the wire. This is obviously not great for a lot of reasons, and as such protocols like EAP-TLS, EAP-TTLS and others have been widely used for a long time.
 
-When I started working on this, I could not find a library to help me implement this. This might be due to protocols like this mostly using older C++ code and not "relatively" new language like Go, which is what the authentik RADIUS server uses. I could simply also have missed a library.
+When I started working on this, I could not find a library to help me implement this. This might be due to protocols like this mostly using older C++ code and not a "relatively" new language like Go, which is what the authentik RADIUS server uses. I could simply also have missed a library.
 
 This means my adventure started with a raw EAP message and an open Wireshark window with a successful authentication for comparison. Implementing EAP parsing itself was relatively straight forward (in this simple iteration anyways, we'll get back to this later) and so I won't go too in-depth in it here (if you're still curious, [here](https://github.com/goauthentik/authentik/blob/9b7731e219c9cd655739ed83caac0b83a2c545f8/internal/outpost/radius/eap/protocol/eap/payload.go#L37)'s the code).
 
@@ -64,7 +64,7 @@ After some testing I was able to get some initial data from Go's `tls.Server`'s 
 
 ## Fusing together two different worlds
 
-For those reading that have used `tls.Server` in Go, or in fact any network protocol in Go offer a somewhat similar interface to an open file.
+For those reading that have used `tls.Server` in Go, or in fact any network protocol in Go, you'll know that it offer a somewhat similar interface to an open file.
 
 ```go
 // A rough look at what methods a network connection usually implement
