@@ -180,6 +180,8 @@ The main downside of having these two different versions is that on a lot of sys
 
 Once again to start figuring this out I started with a Wireshark window of a successful authentication. I noticed that even though PEAP uses a different EAP Type ID (EAP-TLS is 13, PEAP is 26) (and you might've noticed that the screenshot above actually shows PEAP), the data within EAP was still the same as with EAP-TLS. This was a welcome surprise as I had just spent all this time to implement EAP-TLS, but now I had to re-organize the code to support the same protocol logic with a different type ID and also for protocols to support an "inner" layer.
 
+I also hadn't written the original EAP-TLS implementation to support writing/reading "Application Data" from the TLS connection, as this simply wasn't required with EAP-TLS.
+
 On the successful connection I noticed that unlike with EAP-TLS, there was still traffic being sent back and forth after the successful TLS Handshake...however I wasn't able to look at what's contained in the TLS connection.
 
 {{< figure src="encrypted-tls-data.png" position="center" caption="Alright, keep your secrets then." >}}
@@ -192,7 +194,57 @@ To be fully honest for this, I thought all you needed to decrypt TLS traffic was
 
 ## EAP...inside of EAP....?
 
+The happiness of finally seeing the encrypted data was somewhat short-lived, as Wireshark was showing me the raw data now, but it wasn't decoding it. This was honestly quite disorienting, as I had gotten so used to it decoding data and showing me values.
 
+Around the same time I however also found [this great post from the Cisco forums](https://community.cisco.com/t5/security-blogs/eap-peap-with-mschapv2-decrypted-and-decoded/ba-p/3106761), which helped understand what was happening a lot more.
+
+This post helped me understand that the data I was actually looking at was EAP...within TLS...within EAP. But not quite normal EAP, [thanks to Microsoft's implementation in Windows XP](https://datatracker.ietf.org/doc/html/draft-kamath-pppext-peapv0-00.txt#section-1.1), this inner EAP data does not include the full EAP header. It only carries the 8-bit type field, followed by the data of the sub-protocol. Once again there's an exception, but we'll get to that later.
+
+This is also when I noticed that I had quite a bit of code refactoring to do, to be able to support parsing EAP within EAP. Previously the codebase assumed EAP to always be the outer protocol so there was quite of dis-entangling to do. Similarly, this also meant making the ability to "Negotiate inner EAP protocols" needed to be accessible for other protocols. There go another couple hours...
+
+Parsing the actual PEAP packets wasn't too hard since I could basically just pad the data we got from the outer layer and add some empty bytes and pass it to the original EAP parser.
+
+## MSCHAPv2
+
+Parsing the actual MSCHAPv2 packets was mostly straight forward (aside from an off-by-one error which cost me a couple hours, sigh). Generating the answer was, equally, mostly straight forward thanks to [this](https://github.com/layeh/radius/blob/master/vendors/microsoft/mschapv2-server-example.go) example, which shows how to generate an NT-Response. As expected with MSCHAPv2 it requires the user credentials to be available in plaintext.
+
+A large part of the time spent on implementing MSCHAPv2 support was actually once again refactoring existing code. The previous code already had a mechanism to allow an inner protocol to signal it had finished successfully, however it wasn't built for handling this level of complexity and nested-ness.
+
+Additionally, we still needed to get those [MPPE](#the-sidequest-of-mppe) keys from above; even though MSCHAPv2 generates its own MPPE keys, when used within PEAP the TLS keys have a higher priority.
+
+I won't get too much into the refactoring, but as usual you can see more [here](https://github.com/goauthentik/authentik/commit/0ea6299e2e0a3c84959935091347b0fe40f10dfa).
+
+#### The sidequest of PEAP Extension AVPs
+
+Yep you guessed it correctly, all the above was not quite enough yet to allow for a full MSCHAPv2 authentication. Remember above when I said that PEAP packets have a different format due to Microsoft's implementation, with one exception?
+
+Well originally I thought that exception didn't affect this implementation, but no, to complete MSCHAPv2 they are indeed needed. Sigh, once again.
+
+After the server has validated the MSCHAPv2 challenge and sent the Authenticator to the client, the client sends us a packet with `1a 03`, which means type `0x1a/26` (MSCHAPv2) and OpCode `03`, which is a success request.
+
+To that, the server is supposed to respond with a PEAP packet containing an EAP packet with type `0x21/33` containing a single AVP ([and these are not the same AVPs as RADIUS itself, because of course](https://datatracker.ietf.org/doc/html/draft-kamath-pppext-peapv0-00.txt#section-2.3)) with type set to `3` and the value of `0x0001`.
+
+Encoding logic for this was quick to write as at this point I had gotten quite quick at taking RFCs and turning them into decoding/encoding logic. However there was a small hurdle thrown in with this one; the AVP Type field is a *14-bit* number, encoded after a 1 bit field for the mandatory flag and 1 reserved bit. I'm quite crusty when it comes to binary math but eventually got it to work and later improved it with some external help.
+
+Upon sending the PEAP Extension payload, we need to wait to receive the same data from the client, however instead of a Code 1 (Request) we need to receive it with a Code 2 (Response), the rest of the packet being identical.
+
+---
+
+After indulging on the last sidequest, we finally get to send the client an `Access-Accept` packet, and we're officially done with MSCHAPv2.
+
+## Drawing the rest of the owl
+
+Despite, as mentioned above, PEAPv1 (with [EAP-GTC]) not being too widely supported, I still wanted to have a look at it. Partially because the itch hadn't fully been scratched yet, and partially because [EAP-GTC] uses a challenge-response system, which lends itself to the authentication workflow of authentik really well.
+
+Implementing EAP-GTC was probably the easiest part so far, as we simply send the client an ASCII-encoded byte array as a challenge (which is most commonly used as the prompt for the user to authenticate), and we receive back an ASCII-encoded byte array as a response of whatever the client entered.
+
+Testing this was a bit annoying as a lot of applications are hard-coded to assume the only prompt they will ever get will be for the password, and will only return the password and not prompt the user for any other credentials.
+
+---
+
+For now this concludes my journey into RADIUS, EAP and all other protocols that lay within. I might at some point re-visit the code to add support for more, whether it is due to demand or to scratch that same itch again. If you're read all the way to the end, thank you! I appreciate you experiencing this journey with me and I hope you learned something.
+
+For now this code lives in the [authentik] Repo (https://github.com/goauthentik/authentik/compare/main...eap-but-actually), however I am also considering releasing this as a standalone library for other people to use.
 
 [authentik]: https://goauthentik.io
 [freeradius]: https://www.freeradius.org
