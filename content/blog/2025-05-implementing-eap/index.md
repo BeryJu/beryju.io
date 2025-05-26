@@ -56,6 +56,18 @@ This means my adventure started with a raw EAP message and an open Wireshark win
 
 In the very beginning I didn't even know how to test this properly and so all my initial tests were done using a separate SSID setup on my access-point and configuring that to use the RADIUS server running on my laptop. This obviously didn't give me much data to help figure out what's happening as I was also using my iPhone as a test-device. Luckily I found out about [`eapol_test`](https://manpages.debian.org/testing/eapoltest/eapol_test.8.en.html) somewhat shortly after. This tool allows for testing various WiFi authentication methods from a Linux machine, and is **very** verbose with its logging.
 
+#### The sidequest of Wireshark
+
+At this point I also noticed a very annoying issue that by now I'm pretty sure is a Wireshark bug; RADIUS packets with somewhat larger EAP payload would not be correctly parsed by Wireshark.
+
+{{< figure src="wireshark-bug.png" position="center" caption="Wireshark screenshot of a successful authentication using standard `eapol_test`" >}}
+
+This threw me off quite a bit as this was showing up whether or nor the authentication was successful. No matter if I used `eapol_test` or an iPad as test device. After a couple hours of researching and trying to dissect `eapol_test` I found that it sets its maximum fragment size to [1398 bytes](https://w1.fi/wpa_supplicant/devel/config__ssid_8h.html), which Wireshark doesn't seem to like. Cloning the code for it, editing `wpa_supplicant/config_ssid.h`, and setting `DEFAULT_FRAGMENT_SIZE` to something like `1000` and then running `make eapol_test` fixed this issue and allowed to me to look at the full conversation in Wireshark.
+
+Sigh that took a couple hours to figure out; end of the sidequest.
+
+---
+
 The first hurdle was getting [EAP-TLS] to work. I chose this protocol as it both secure but also very widely supported, especially for the use with WPA2/3 enterprise for WiFi authentication.
 
 Luckily I was able to find a client implementation of EAP-TLS in Go, however it relied on a customized version of Go's `crypto/tls` package. This wasn't a great omen as the main thing I was trying to avoid was writing any TLS code myself, as this is almost never ever a good idea.
@@ -78,7 +90,7 @@ In most cases, this makes sense. It allows for the protocol to consume as much d
 
 However this turned out to not be as easy as initially thought due to how much state needs to be kept, and RADIUS being transported over UDP. Additionally to that we can't send as much data to the client as the protocol needs to; we need to send as much data as a RADIUS packet can fit and then wait for the client to ask for more data. With most EAP sub-protocols this isn't an issue, however with anything TLS-based, the sub-protocols specify a separate chunking mechanism.
 
-My solution to this was to create an custom buffered connection I'd parse to `tls.Server`, which buffers both incoming and outgoing data. You might ask; Why incoming data too? Turns out that the client can also send us more data than fits in a single packet. We do however get told how much data we should be expecting, so we can save incoming data into memory, tell the client to send us the next chunk and repeat until we have everything.
+My solution to this was to create an custom buffered connection I'd pass to `tls.Server`, which buffers both incoming and outgoing data. You might ask; Why incoming data too? Turns out that the client can also send us more data than fits in a single packet. We do however get told how much data we should be expecting, so we can save incoming data into memory, tell the client to send us the next chunk and repeat until we have everything.
 
 The implementation for this functions roughly functions as follows:
 
@@ -91,9 +103,39 @@ The implementation for this functions roughly functions as follows:
 
 **Importantly**, even after the handshake is done on the server-side, there might be more data that needs to be transferred. This I didn't know initially; and it took quite a bit of time to figure out why things weren't working.
 
+# TODO: MPPE
+
 For EAP-TLS specifically, this basically finishes the authentication. EAP-TLS uses TLS Client Certificates for authentication, so the RADIUS server will validate the certificate and determine the result of the authentication based on that.
 
 {{< figure src="eap-tls-success.png" position="center" caption="An unbelievable amount of glee befell me once I finally saw the first 'SUCCESS' message." >}}
+
+## Going even further
+
+Initially this was all that I wanted to accomplish; I was successfully able to connect to my WiFi with my iPad using a set of self-signed certificates, authenticated by authentik.
+
+However also around this time I was wondering how this would make sense within authentik as a product, how we wanted to use this and/or if this was maybe something that would be better to only publish as a separate library. At the same time though, the itch that implementing this had unknowingly formed was not quite scratched yet.
+
+Purely by coincidence we got an inquiry a couple days later about supporting [PEAP], which is something I had previously only briefly considered.
+
+[PEAP] exists in two different versions, PEAPv0 which uses [MSCHAPv2] over TLS and PEAPv1 which uses [EAP-GTC] over TLS. Anyone that had to deal with [MSCHAPv2] will know why it immediately made my alarm bells ring; it relies on passwords being stored with a reversible hash, making any kind of password storage much less secure and is not something that should be done, like ever. [EAP-GTC] on the other hand was something I had looked at quite a bit before, as it uses a dynamic Challenge-Response system. This would allow us to implement multi-factor authentication and even other things, as our RADIUS server can send the client any prompt.
+
+The main downside of having these two different versions is that on a lot of systems, only PEAPv0 is supported (primarily due to Microsoft not adding support for PEAPv1, ever, not even to this date). Out of sheer curiosity and to scratch that newly formed itch I still wanted to look into MSCHAPv2 and see how it works, and maybe figure out a way to store a separate set of credentials that can be in plaintext.
+
+Once again to start figuring this out I started with a Wireshark window of a successful authentication. I noticed that even though PEAP uses a different EAP Type ID (EAP-TLS is 13, PEAP is 26) (and you might've noticed that the screenshot above actually shows PEAP), the data within EAP was still the same as with EAP-TLS. This was a welcome surprise as I had just spent all this time to implement EAP-TLS, but now I had to re-organize the code to support the same protocol logic with a different type ID and also for protocols to support an "inner" layer.
+
+On the successful connection I noticed that unlike with EAP-TLS, there was still traffic being sent back and forth after the successful TLS Handshake...however I wasn't able to look at what's contained in the TLS connection.
+
+{{< figure src="encrypted-tls-data.png" position="center" caption="Alright, keep your secrets then." >}}
+
+To be fully honest for this, I thought all you needed to decrypt TLS traffic was the private key of the certificate used by the server. I even tried using the private key of the local CA I used to generate these certs. It once again took quite a while to learn how things work nowadays and that more data is required.
+
+[The Wireshark Wiki](https://wiki.wireshark.org/TLS) helped with this one, mentioning `SSLKEYLOGFILE` which was the one magic word I had to find for google to give me the results I needed. It then pointed me to [this GitHub issue](https://github.com/golang/go/issues/13057), which then pointed me to the `KeyLogWriter` attribute on `*tls.Config`, which allowed me to write out TLS master secrets to a file that I could feed into Wireshark aaaaand......
+
+{{< figure src="decrypted-tls-data.png" position="center" caption="Finally, the data." >}}
+
+## EAP...inside of EAP....?
+
+
 
 [authentik]: https://goauthentik.io
 [freeradius]: https://www.freeradius.org
@@ -101,3 +143,6 @@ For EAP-TLS specifically, this basically finishes the authentication. EAP-TLS us
 [PAP]: https://datatracker.ietf.org/doc/html/rfc2865#section-5.2
 [EAP]: https://datatracker.ietf.org/doc/html/rfc3748
 [EAP-TLS]: https://datatracker.ietf.org/doc/html/rfc5216
+[PEAP]: https://datatracker.ietf.org/doc/html/rfc8940
+[MSCHAPv2]: https://datatracker.ietf.org/doc/html/rfc2759
+[EAP-GTC]: https://datatracker.ietf.org/doc/html/rfc3748#section-5.6
