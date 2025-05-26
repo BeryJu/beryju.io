@@ -103,7 +103,64 @@ The implementation for this functions roughly functions as follows:
 
 **Importantly**, even after the handshake is done on the server-side, there might be more data that needs to be transferred. This I didn't know initially; and it took quite a bit of time to figure out why things weren't working.
 
-# TODO: MPPE
+Now, everything looked successful to me, and there were a lot of `SUCCESS` messages from `eapol_test`, but it still ended with a `FAILURE`. However there was at least some slightly helpful messages:
+
+```
+EAPOL: Successfully fetched key (len=32)
+PMK from EAPOL - hexdump(len=32): 0c 9b 2e d3 03 4c 51 8d 1b 18 a4 fa f9 36 71 ac a6 fb c9 57 e6 fe fb c0 1b 4c 87 a1 72 0b ff 12
+WARNING: PMK mismatch
+PMK from AS - hexdump(len=32): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+No EAP-Key-Name received from server
+```
+
+#### The sidequest of MPPE
+
+MPPE (which stands for Microsoft Point-to-Point Encryption) is a way of encryption, and I'm not going to try to explain it further as specifically in this area I have no idea what I'm talking about.
+
+Reading further into [this](https://datatracker.ietf.org/doc/html/rfc2548#section-2.4) and [this](https://datatracker.ietf.org/doc/html/rfc3079#section-5.2) I started to figure out what EAP-TLS clients expect here. This is additional data extracted from the TLS connection after the handshake finished used to authenticate further communication between client and RADIUS server.
+
+Looking into implementing this once again sent me through the source code of wpa_supplicant, and seeing what they do:
+
+```cpp
+static void eap_tls_success(struct eap_sm *sm, struct eap_tls_data *data,
+                            struct eap_method_ret *ret)
+{
+        [...] Shortened for brevity
+
+        if (data->ssl.tls_v13) {
+                label = "EXPORTER_EAP_TLS_Key_Material";
+                context = eap_tls13_context;
+                context_len = 1;
+        } else {
+                label = "client EAP encryption";
+        }
+
+        eap_tls_free_key(data);
+        data->key_data = eap_peer_tls_derive_key(sm, &data->ssl, label,
+                                                 context, context_len,
+                                                 EAP_TLS_KEY_LEN +
+                                                 EAP_EMSK_LEN);
+        if (data->key_data) {
+                wpa_hexdump_key(MSG_DEBUG, "EAP-TLS: Derived key",
+                                data->key_data, EAP_TLS_KEY_LEN);
+                wpa_hexdump_key(MSG_DEBUG, "EAP-TLS: Derived EMSK",
+                                data->key_data + EAP_TLS_KEY_LEN,
+                                EAP_EMSK_LEN);
+        } else {
+                wpa_printf(MSG_INFO, "EAP-TLS: Failed to derive key");
+        }
+}
+```
+
+This led me down the road to figuring out `eap_peer_tls_derive_key`, then `tls_connection_export_key` and finally `SSL_export_keying_material`. Once again after looking around some more this led me to the Go equivalent, `ExportKeyingMaterial()`.
+
+This function needs to be passed the correct label as specified above, a buffer that depending on TLS version is either `[]byte{}` or `[]byte{13}` (the latter for TLS 1.3) and an empty 64 byte buffer...no wait, actually a 128 byte buffer, despite each of the MPPE keys being 32 bytes...
+
+At this point I felt very much out of my depth so I was basically trying to directly port the code from C++ to Go. It did take me another hour to figure out that the first key was the first 32 bytes of the buffer from above and the second key was the next 32 bytes, but offset by 32 bytes...? Ok sure.
+
+Once again, that's the end of the sidequest....
+
+---
 
 For EAP-TLS specifically, this basically finishes the authentication. EAP-TLS uses TLS Client Certificates for authentication, so the RADIUS server will validate the certificate and determine the result of the authentication based on that.
 
