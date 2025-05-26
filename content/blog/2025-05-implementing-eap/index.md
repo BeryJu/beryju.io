@@ -121,11 +121,11 @@ Reading further into [this](https://datatracker.ietf.org/doc/html/rfc2548#sectio
 
 Looking into implementing this once again sent me through the source code of wpa_supplicant, and seeing what they do:
 
-{{< code language="cpp" title="src/eap_peer/eap_tls.c" isCollapsed="false" >}}
+{{< code language="c" title="src/eap_peer/eap_tls.c" isCollapsed="false" >}}
 static void eap_tls_success(struct eap_sm *sm, struct eap_tls_data *data,
                             struct eap_method_ret *ret)
 {
-        [...] Shortened for brevity
+        // Shortened for brevity
 
         if (data->ssl.tls_v13) {
                 label = "EXPORTER_EAP_TLS_Key_Material";
