@@ -13,7 +13,11 @@ taxonomy:
     - jens
 ---
 
-The first question you might be asking yourself after reading the title of this post is "Why in the @#$%&! would you do that". If that wasn't the first thing that came to your mind, you're probably wondering what EAP even is and why you should be so taken aback. Don't worry, I will try to answer both of these questions with this blog post.
+The first question you might be asking yourself after reading the title of this post is
+
+> "Why in the **@#$%&!** would you do that"
+
+If that wasn't the first thing that came to your mind, you're probably wondering what EAP even is and why you should be so taken aback. Don't worry, I will try to answer both of these questions with this blog post.
 
 ## Why implement EAP from scratch
 
