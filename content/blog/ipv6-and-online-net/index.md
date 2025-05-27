@@ -17,8 +17,6 @@ taxonomy:
 visible: true
 ---
 
-# IPv6 and online.net
-
 ## The experimenting
 
 *Shoutout to [/u/dantho](https://www.reddit.com/user/dantho281) and [/u/CBRJack](https://www.reddit.com/user/CBRJack) for helping me with this*

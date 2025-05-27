@@ -3,7 +3,7 @@ languageCode: en-us
 title: BeryJu.io
 disqusShortname: beryju
 enableGitInfo: true
-summaryLength: 1
+summaryLength: 30
 
 module:
   proxy: direct
