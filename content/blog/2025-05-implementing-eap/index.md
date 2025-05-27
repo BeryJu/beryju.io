@@ -62,7 +62,7 @@ At this point I also noticed a very annoying issue that by now I'm pretty sure i
 
 {{< figure src="wireshark-bug.png" position="center" caption="Wireshark screenshot of a successful authentication using standard `eapol_test`" >}}
 
-This threw me off quite a bit as this was showing up whether or nor the authentication was successful. No matter if I used `eapol_test` or an iPad as test device. After a couple hours of researching and trying to dissect `eapol_test` I found that it sets its maximum fragment size to [1398 bytes](https://w1.fi/wpa_supplicant/devel/config__ssid_8h.html), which Wireshark doesn't seem to like. Cloning the code for it, editing `wpa_supplicant/config_ssid.h`, and setting `DEFAULT_FRAGMENT_SIZE` to something like `1000` and then running `make eapol_test` fixed this issue and allowed to me to look at the full conversation in Wireshark.
+This threw me off quite a bit as this was showing up whether or not the authentication was successful. No matter if I used `eapol_test` or an iPad as test device. After a couple hours of researching and trying to dissect `eapol_test` I found that it sets its maximum fragment size to [1398 bytes](https://w1.fi/wpa_supplicant/devel/config__ssid_8h.html), which Wireshark doesn't seem to like. Cloning the code for it, editing `wpa_supplicant/config_ssid.h`, and setting `DEFAULT_FRAGMENT_SIZE` to something like `1000` and then running `make eapol_test` fixed this issue and allowed to me to look at the full conversation in Wireshark.
 
 Sigh that took a couple hours to figure out; end of the sidequest.
 
@@ -115,7 +115,7 @@ No EAP-Key-Name received from server
 
 #### The sidequest of MPPE
 
-MPPE (which stands for Microsoft Point-to-Point Encryption) is a way of encryption, and I'm not going to try to explain it further as specifically in this area I have no idea what I'm talking about.
+MPPE (which stands for Microsoft Point-to-Point Encryption) is a method of encrypting data, and I'm not going to try to explain it further as specifically in this area I have no idea what I'm talking about.
 
 Reading further into [this](https://datatracker.ietf.org/doc/html/rfc2548#section-2.4) and [this](https://datatracker.ietf.org/doc/html/rfc3079#section-5.2) I started to figure out what EAP-TLS clients expect here. This is additional data extracted from the TLS connection after the handshake finished used to authenticate further communication between client and RADIUS server.
 
@@ -170,11 +170,11 @@ For EAP-TLS specifically, this basically finishes the authentication. EAP-TLS us
 
 Initially this was all that I wanted to accomplish; I was successfully able to connect to my WiFi with my iPad using a set of self-signed certificates, authenticated by authentik.
 
-However also around this time I was wondering how this would make sense within authentik as a product, how we wanted to use this and/or if this was maybe something that would be better to only publish as a separate library. At the same time though, the itch that implementing this had unknowingly formed was not quite scratched yet.
+However also around this time I was wondering how this would make sense within authentik as a product, how we wanted to use this and/or if this was maybe something that would be better to only publish as a separate library. At the same time though, the itch that implementing this had unknowingly formed had not quite been scratched yet.
 
 Purely by coincidence we got an inquiry a couple days later about supporting [PEAP], which is something I had previously only briefly considered.
 
-[PEAP] exists in two different versions, PEAPv0 which uses [MSCHAPv2] over TLS and PEAPv1 which uses [EAP-GTC] over TLS. Anyone that had to deal with [MSCHAPv2] will know why it immediately made my alarm bells ring; it relies on passwords being stored with a reversible hash, making any kind of password storage much less secure and is not something that should be done, like ever. [EAP-GTC] on the other hand was something I had looked at quite a bit before, as it uses a dynamic Challenge-Response system. This would allow us to implement multi-factor authentication and even other things, as our RADIUS server can send the client any prompt.
+[PEAP] exists in two different versions, PEAPv0 which uses [MSCHAPv2] over TLS and PEAPv1 which uses [EAP-GTC] over TLS. Anyone that has had to deal with [MSCHAPv2] will know why it immediately made my alarm bells ring; it relies on passwords being stored with a reversible hash, making any kind of password storage much less secure and is not something that should be done, like ever. [EAP-GTC] on the other hand was something I had looked at quite a bit before, as it uses a dynamic Challenge-Response system. This would allow us to implement multi-factor authentication and even other things, as our RADIUS server can send the client any prompt.
 
 The main downside of having these two different versions is that on a lot of systems, only PEAPv0 is supported (primarily due to Microsoft not adding support for PEAPv1, ever, not even to this date). Out of sheer curiosity and to scratch that newly formed itch I still wanted to look into MSCHAPv2 and see how it works, and maybe figure out a way to store a separate set of credentials that can be in plaintext.
 
