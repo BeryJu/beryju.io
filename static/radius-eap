@@ -1,0 +1,11 @@
+<html>
+
+<head>
+    <meta name="go-import" content="beryju.io/radius-eap git https://github.com/beryju/radius-eap">
+</head>
+
+<body>
+    <pre><code>go get beryju.io/radius-eap</code></pre>
+</body>
+
+</html>
