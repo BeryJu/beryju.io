@@ -244,7 +244,9 @@ Testing this was a bit annoying as a lot of applications are hard-coded to assum
 
 For now this concludes my journey into RADIUS, EAP and all other protocols that lay within. I might at some point re-visit the code to add support for more, whether it is due to demand or to scratch that same itch again. If you're read all the way to the end, thank you! I appreciate you experiencing this journey with me and I hope you learned something.
 
-For now this code lives in the [authentik] Repo (https://github.com/goauthentik/authentik/compare/main...eap-but-actually), however I am also considering releasing this as a standalone library for other people to use.
+~~For now this code lives in the [authentik] Repo (https://github.com/goauthentik/authentik/compare/main...eap-but-actually), however I am also considering releasing this as a standalone library for other people to use.~~
+
+I've published this code as a standalone [library](https://github.com/beryJu/radius-eap): https://pkg.go.dev/beryju.io/radius-eap
 
 [authentik]: https://goauthentik.io
 [freeradius]: https://www.freeradius.org
