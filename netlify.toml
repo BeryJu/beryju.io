@@ -48,3 +48,8 @@ HUGO_ENABLEGITINFO = "true"
   to = "https://beryju.io/:splat"
   status = 301
   force = true
+
+[[headers]]
+  for = "/.well-known/com.apple.remotemanagement"
+  [headers.values]
+    Content-Type = "application/json"
