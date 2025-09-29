@@ -1,0 +1,8 @@
+{
+    "Servers": [
+        {
+            "Version": "mdm-byod",
+            "BaseURL": "http://fleet.beryjuio-prod.k8s.beryju.io/api/mdm/apple/account_driven_enroll",
+        }
+    ]
+}
