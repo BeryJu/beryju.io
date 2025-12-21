@@ -1,0 +1,11 @@
+<html>
+
+<head>
+    <meta name="go-import" content="beryju.io/saml-test-idp git https://github.com/beryju/saml-test-idp">
+</head>
+
+<body>
+    <pre><code>go get beryju.io/saml-test-idp</code></pre>
+</body>
+
+</html>
