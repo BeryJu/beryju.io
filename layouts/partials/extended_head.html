@@ -6,6 +6,7 @@
         person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
     })
 </script>
+<script defer src="https://analytics.beryju.io/script.js" data-website-id="43fdd352-7c2f-4e53-a010-7566bded4da5"></script>
 {{ range .AlternativeOutputFormats -}}
 {{ printf `
 <link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
